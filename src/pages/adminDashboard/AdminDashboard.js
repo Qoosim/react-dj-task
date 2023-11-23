@@ -1,7 +1,66 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import BarChart from '../../components/chart/BarChart';
+import { useLocation } from "react-router-dom";
+
+const USER_DATA_URL = "https://stg.dhunjam.in/account/admin/4";
 
 const AdminDashboard = () => {
+  const [userData, setUserData] = useState(null);
+  const [newValue, setNewValue] = useState(null);
+  const location = useLocation();
+
+  useEffect(() => {
+    const token = location.state;
+    const getUserData = async () => {
+      try {
+        const userRes = await fetch(USER_DATA_URL, {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (!userRes.ok) {
+          throw Error("failed to get user");
+        }
+        const result = await userRes.json();
+        setUserData(result.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    getUserData();
+  }, [userData, location.state]);
+
+  const UpdatePrice = async () => {
+    try {
+      const userToken = location.state;
+      const parsedValue = parseInt(newValue);
+      setUserData((prev) => ({
+        ...prev,
+        amount: { ...prev.amount, category_6: parsedValue },
+      }));
+      const updateData = { amount: userData?.amount };
+      setNewValue("");
+
+      const updateRes = await fetch(USER_DATA_URL, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${userToken}`,
+        },
+        body: JSON.stringify(updateData),
+      });
+
+      if (!updateRes.ok) {
+        throw Error("Failed to update price. Check your input and try again.");
+      }
+      console.log("Stored Data:", userData);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <main className="flex flex-col items-center h-screen w-full pt-8">
       <h1 className="text-3xl font-bold my-4">Social, Hebbal on Dhan Jam</h1>
@@ -48,9 +107,19 @@ const AdminDashboard = () => {
             </div>
           </div>
         </div>
-        <BarChart />
+        {userData && (
+          <BarChart
+            custom={userData.amount.category_6}
+            category_7={userData.amount.category_7}
+            category_8={userData.amount.category_8}
+            category_9={userData.amount.category_9}
+            category_10={userData.amount.category_10}
+          />
+        )}
         <button className="w-full bg-[#6741D9] p-2 rounded-lg mt-10">Save</button>
       </div>
     </main>
   )
 }
+
+export default AdminDashboard;

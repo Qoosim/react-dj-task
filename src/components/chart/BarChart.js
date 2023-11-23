@@ -1,5 +1,3 @@
-import React from 'react';
-
 import React, { useState, useEffect } from 'react';
 import { Bar } from 'react-chartjs-2';
 import {
@@ -21,7 +19,7 @@ ChartJS.register(
   Legend
 )
 
-const BarChart = () => {
+const BarChart = ({ custom, category_7, category_8, category_9, category_10 }) => {
   const [chartData, setChartData] = useState({
     datasets: []
   })
@@ -30,11 +28,11 @@ const BarChart = () => {
 
   useEffect(() => {
     setChartData({
-      labels: ["Custom", "Category1", "Category2", "Category3", "Category4"],
+      labels: ["Custom", "Category_7", "Category_8", "Category_9", "Category_10"],
       datasets: [
         {
           label: "Value",
-          data: [50, 40, 30, 20, 10],
+          data: [custom, category_7, category_8, category_9, category_10],
           backgroundColor: "#F0C3F1"
         }
       ]
@@ -55,9 +53,7 @@ const BarChart = () => {
 
   return (
     <>
-      <div className="">
-        <Bar data={chartData} options={chartOptions} />
-      </div>
+      <Bar data={chartData} options={chartOptions} />
     </>
   )
 }
