@@ -6,7 +6,6 @@ import {
   LinearScale,
   BarElement,
   Title,
-  Tooltip,
   Legend
 } from 'chart.js';
 
@@ -15,7 +14,6 @@ ChartJS.register(
   LinearScale,
   BarElement,
   Title,
-  Tooltip,
   Legend
 )
 
@@ -49,11 +47,13 @@ const BarChart = ({ custom, category_7, category_8, category_9, category_10 }) =
       maintainAspectRatio: false,
       responsive: true
     })
-  }, [])
+  }, [custom, category_7, category_8, category_9, category_10])
 
   return (
     <>
-      <Bar data={chartData} options={chartOptions} />
+      <div>
+        <Bar data={chartData} options={chartOptions} />
+      </div>
     </>
   )
 }
